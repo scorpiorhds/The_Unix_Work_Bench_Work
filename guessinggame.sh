@@ -1,26 +1,31 @@
 #!/usr/bin/env bash
+	
 
-numero_de_archivos=$(find*-maxdepth 0 -type f|wc-l)
+	function guess_file_count {
+	
 
-echo "intenta adivinar el numero de archivos existentes en el directorio actual?"
+	    correct_guess=0
+	    while [[ $correct_guess -eq 0 ]]
+	    do
+	        echo "Enter your guess for number of files in current directory: "
+	        read guess
+	        if [[ $guess =~ ^\s*$ || $guess =~ [^0-9]+ ]]
+	        then
+	            echo "Your guess should be a number"
+	        elif [[ $guess -gt $1 ]]
+	        then
+	            echo "Your guess is too high"
+	        elif [[ $guess -lt $1 ]]
+	        then
+	            echo "Your guess is too low"
+	        else
+	            echo "Congrats!!! You guessed correctly."
+	            let correct_guess=1
+	        fi
+	    done
+	}
+	
 
-function revisar_respuesta {
-	if [[ $1-gt $numero_de_archivos]]
-	then
-		echo "te excediste demasiado, intentalo nuevamente"
-	elif [[ $1-lt $numero_de_archivos]]
-	then
-		echo "no, tenemos mas cantidad de archivos en el directorio actual, intenta adivinar nuevamente"
-else
-	echo "correcto, felicidades, acabas de adivinar el numero de archivos"
-fi
-}
+	file_count=$(ls -1A | wc -l)
+	guess_file_count file_count
 
-
-while [[ !$user_guess -eq $numero_de_archivos]]
-do
-	read user_guess
-
-check_answer $user_guess
-
-done
